@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/blog.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+    <nav class="navBar" >
+        <div class="menu">
+            <img src="https://ewr1.vultrobjects.com/lmsbzzbx/attachment/y1jqofqjr8tcbcask.png" alt="logo dumbways">
+            <a href="index.html">Home</a>
+            <a href="blog.html">Blog</a>    
+        </div>
+        <div class="kontak">
+            <a href="contact.html" class="btn-contact">Contact Me</a>    
+        </div>     
+    </nav>
+    
+    <div class="blog">
+        <div class="blog-form">
+            <div class="form-container">
+                <form onsubmit="submitBlog(event)">
+                    <h1>Create Post Blog</h1>
+                    <div>
+                        <label for="title">Project Name</label>
+                        <input type="text" id="inputTitle">
+                    </div>
+                    <div class="date" style="display: flex;">
+                        <div>
+                            <label for="startDate" >Start Date</label>
+                            <input type="date" id="startDate" style="width: 90%;">
+                        </div>
+                        <div style="width: 50%; align-content: flex-end; margin-left: 26px;">
+                            <label for="endDate" >End Date</label>
+                            <input type="date" id="endDate" >
+                        </div>
+                    </div>
+                    <div>
+                        <label for="content">Content</label>
+                        <textarea id="inputContent"></textarea>
+                    </div>
+                    <div>
+                        <label for="image">Upload Image</label>
+                        <input type="file" id="inputImage">
+                    </div>
+                    <div>
+                        <label for="technologies" style="margin-bottom: 20px;">Technologies</label>
+                        <div class="radioTeknologi" style="display: flex;flex-direction: row; margin-top:20px;">
+                            <input type="checkbox" id="nodejs" name="fav_language" value="HTML">
+                            <label for="nodejs">Node JS</label><br>
+                            <input type="checkbox" id="reactjs" name="fav_language" value="CSS">
+                            <label for="reactjs">React JS</label><br>
+                            <input type="checkbox" id="nextjs" name="fav_language" value="JavaScript">
+                            <label for="nextjs">Next JS</label>
+                            <input type="checkbox" id="typescript" name="fav_language" value="JavaScript">
+                            <label for="typescript">TypeScript</label>
+                        </div>
+                        
+                    </div>
+                    <div class="button-input">
+                        <button>Post Blog</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <hr class="line">
+        <h1>My project</h1>
+        <div id="content" class="blog-list">
+
+        </div>
+    </div>
+
+    <script src="javascript/blog.js"></script>
+</body>
+</html>

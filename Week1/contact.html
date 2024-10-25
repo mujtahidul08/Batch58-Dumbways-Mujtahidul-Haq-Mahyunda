@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="css/contact.css">
+    
+</head>
+<body>
+    <nav class="navBar" >
+        <div class="menu">
+            <img src="https://ewr1.vultrobjects.com/lmsbzzbx/attachment/y1jqofqjr8tcbcask.png" alt="logo dumbways">
+            <a href="index.html">Home</a>
+            <a href="blog.html">Blog</a>    
+        </div>
+        <div class="kontak">
+            <a href="contact.html" class="btn-contact">Contact Me</a>    
+        </div>     
+    </nav>
+
+
+    <div class="container">
+        <form class="form-contact">
+            <h1>Kontak Mujtahidul Now!</h1>
+            <label for="label-contact">Name</label>
+            <input type="text" class="input-contact" id="inputName">
+
+            <label for="label-contact">Email</label>
+            <input type="text" class="input-contact" id="inputEmail">
+
+            <label for="label-contact">Phone Number</label>
+            <input type="text" class="input-contact" id="inputPhone">
+
+            <label for="label-contact">Subject</label>
+            <select class="input-contact" id="inputSubject">
+                <option></option>
+                <option>Frontend Developer</option>
+                <option>Backend Developer</option>
+                <option>Fullstack Developer</option>
+            </select>
+
+            <label for="label-contact">Your Message</label>
+            <textarea class="input-contact" id="inputMessage"></textarea>
+            <input type="button" value="Submit" class="submit-contact" onclick="submitData()">
+        </form>
+    </div>
+    <script src="javascript/contact.js"></script>
+</body>
+</html>

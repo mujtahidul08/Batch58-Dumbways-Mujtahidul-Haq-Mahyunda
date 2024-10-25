@@ -1,0 +1,229 @@
+body{
+    background-color: #f0f0f0;
+    font-family: "Roboto", sans-serif;
+    font-weight: 100;
+    font-style: normal; 
+    margin: 0px;
+    padding: 0px;
+}
+.navBar{
+    display: flex; 
+    background-color: white; 
+    height: 70px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    box-shadow:  0 2px 20px 0 gray;
+    position: fixed;
+    top: 0;
+    width: 100%;
+}
+.navBar .menu{
+    display: flex; 
+    align-items: center; 
+    height: 100%; 
+    margin-left: 30px; 
+    margin-right: 30px; 
+    list-style-type: none; 
+    gap: 45px;
+}
+
+.navBar .menu img{
+    height: 50px;
+    margin-left: 40px;
+}
+
+.navBar .kontak{
+    display: flex; 
+    width: 100%; 
+    justify-content: end; 
+    align-items: center; 
+    margin-right:40px; 
+}
+.navBar .menu a{
+        text-decoration:none;
+        font-size: 18px;
+        color: black;
+        font-weight:600;
+        margin-left: 40px;
+        padding: 10px;
+}
+
+.navBar a:hover{
+    color: white;
+    background-color: black;
+    padding: 10px;
+    border-radius: 10px;
+}
+.kontak a:hover{
+    color: black;
+    background-color: gray;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.btn-contact {
+    background-color: rgb(0, 0, 0);
+    color: white;
+    padding: 10px;
+    font-size: 18px;
+    text-decoration: none;
+    border-radius: 10px;
+    text-align: center;
+    margin-right: 40px;
+}
+
+.blog-form {
+    padding: 50px 0;
+    display: flex;
+    justify-content: center;
+}
+
+.blog-form .form-container {
+    width: 500px;
+}
+
+.blog-form .form-container h1 {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.blog-form form label {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.blog-form form input, textarea, select {
+    width: 100%;
+    font-size: 20px;
+    font-weight: bold;
+    padding: 8px;
+    margin-top: 5px;
+    margin-bottom: 20px;
+    background-color: white;
+    border-radius: 10px;
+    border: 1px solid rgb(202, 202, 205);
+}
+
+.blog-form form textarea{
+    height: 250px;
+    resize: none;
+}
+
+.blog-form form .button-input{
+    text-align: right;
+}
+
+.blog-form form button {
+    margin-top: 50px;
+    padding: 8px 20px;
+    font-size: 17px;
+    background-color: black;
+    border-radius: 10px;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+
+.blog hr {
+    border: 1px solid rgb(220, 16, 16);
+    width: 95%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Blog List Items */
+
+.blog .blog-list{
+    margin: 20px;
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    font-family: Arial, Helvetica, sans-serif;
+}
+h1{
+    text-align: center;
+    padding:10px; 
+}
+
+.blog .blog-list .blog-list-items {
+    width: 20%;
+    padding: 8px;
+    margin: 20px 20px 20px 20px;
+    box-shadow: 4px 5px 20px 2px gray;
+    border-radius: 10px;
+    background-color: white;
+}
+
+.blog .blog-list .blog-list-items .blog-image img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.blog .blog-list .blog-list-items .blog-content {
+    padding: 0;
+}
+
+.blog .blog-list .btn-group {
+    margin: 10px 10px;
+    text-align: center;
+}
+
+.blog .blog-list .btn-group .btn-edit{
+    padding: 5px 27px;
+    border: 0;
+    border-radius: 10px;
+    background: black;
+    color: white;
+    margin-right: 7px;
+}
+
+.blog .blog-list .btn-group .btn-post{
+    padding: 5px 27px;
+    border: 0;
+    border-radius: 10px;
+    background: black;
+    color: white;
+    margin-left: 7px;
+}
+
+.blog .blog-list h1 a{
+    margin-left: 0;
+    text-decoration: none;
+    color: black;
+    font-family: Arial, Helvetica, sans-serif;
+    text-transform:capitalize;
+    font-size: 18px;
+}
+
+.blog .blog-list .detail-blog {
+    font-weight: bold;
+    font-size: 12px;
+    line-height: 20px;
+    text-align: center;
+}
+
+.blog .blog-list .blog-list-items .blog-content {
+    font-family: Arial, Helvetica, sans-serif;
+    color: black;
+    font-size: 10px;
+}
+.blog .blog-list-items .bahasaProgram{
+    font-size: 28px;
+    text-align: center;
+    margin: 5px 0px 5px 0px;
+}
+.blog .blog-list-items .blog-content .isi h2{
+    font-size: 15px;
+    font-weight:600;
+    color: black;
+    text-align: justify;
+}
+
+.blog .blog-list p {
+    margin: 8px 8px 8px 0px;
+    font-size: 13px;
+    line-height: 10px;
+    text-align: justify;
+}
