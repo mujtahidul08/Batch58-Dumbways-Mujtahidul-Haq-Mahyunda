@@ -1,0 +1,24 @@
+{
+  "name": "week2",
+  "version": "1.0.0",
+  "description": "this is my personal website with js",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "personal-web"
+  ],
+  "author": "mujtahidul",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.1",
+    "hbs": "^4.2.0",
+    "pg": "^8.13.1",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.37.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.7"
+  }
+}
