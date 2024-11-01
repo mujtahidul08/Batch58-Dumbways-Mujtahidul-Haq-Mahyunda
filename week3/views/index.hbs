@@ -10,7 +10,7 @@
 </head>
 
 <body style="background-color: #f0f0f0;">
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+ <nav class="navbar navbar-expand-lg bg-body-tertiary">
         <div class="container-fluid" style="font-size: 20px;">
           <a class="navbar-brand" href="#">
             <img src="https://ewr1.vultrobjects.com/lmsbzzbx/attachment/y1jqofqjr8tcbcask.png" alt="Logo" style="height: 45px; width: 45px;">
@@ -39,9 +39,22 @@
                 <a class="nav-link fw-semibold" href="/testimonial">Testimonials</a>
               </li>
             </ul>
-            <button class="btn btn-dark fw-semibold" type="button"  style="font-size: 20px;" onclick="window.location.href='/contact';">
-              Contact Me
-            </button>
+            
+            <!-- Login and Register Links -->
+            <ul class="navbar-nav mb-2 mb-lg-0 d-flex align-items-center column-gap-3">
+                <li class="nav-item">
+                    <a class="nav-link fw-semibold" href="/login">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link fw-semibold" href="/register">Register</a>
+                </li>
+                <!-- Contact Button -->
+                <li class="nav-item">
+                    <button class="btn btn-dark fw-semibold ms-3" type="button" style="font-size: 20px;" onclick="window.location.href='/contact';">
+                        Contact Me
+                    </button>
+                </li>
+            </ul>
           </div>
         </div>
     </nav>

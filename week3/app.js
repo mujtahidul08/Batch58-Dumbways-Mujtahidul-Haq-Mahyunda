@@ -27,8 +27,6 @@ hbs.registerHelper('get_duration',(startDate,endDate) => {
 
 });
 
-  
-
 
 hbs.registerHelper('get_full_time', (tanggal) => {
     const date = tanggal.getDate();
@@ -81,6 +79,12 @@ app.get('/contact', (req, res) => {
 
 app.get('/testimonial', (req, res) => {
     res.render('testimonial')
+});
+app.get('/login', (req, res) => {
+  res.render('login')
+});
+app.get('/register', (req, res) => {
+  res.render('register')
 });
 
 app.get('/blogDetail/:id', (req, res) => {
