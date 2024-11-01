@@ -138,7 +138,7 @@
                 <div class="blog-content">
                   <!-- Blog Title -->
                   <h1>
-                    <a href="" target="_blank">{{title}}</a>
+                    <a href="/blogDetail/{{id}}" target="_blank">{{title}}</a>
                   </h1>
                   <!-- Blog Details -->
                   <div class="detail-blog">
@@ -158,11 +158,11 @@
                     </h2>
                   </div>
                   <!-- Blog Duration -->
-                    <p>Durasi: {{durasi}}</p>
+                    <p>Durasi: {{get_duration startDate endDate}}</p>
                     <!-- Buttons for Editing and Posting -->
                     <div class="btn-group" style="display:flex;">
-                        <a href="/edit-blog/{{@index}}" class="btn-edit">Edit Blog</a>
-                        <form method="post" action="/delete-blog/{{@index}}">
+                        <a href="/edit-blog/{{id}}" class="btn-edit">Edit Blog</a>
+                        <form method="post" action="/delete-blog/{{id}}">
                           <button type="submit" class="btn-post">delete Blog</button>
                         </form>
                     </div>

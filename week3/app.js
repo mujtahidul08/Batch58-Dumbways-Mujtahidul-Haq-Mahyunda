@@ -3,6 +3,12 @@ const app = express()
 const port = 3000
 const hbs = require('hbs')
 
+// sequelize init
+const config = require("./config/config.json")
+const { Sequelize, QueryTypes } = require("sequelize")
+const sequelize = new Sequelize(config.development)
+
+
 //helper function
 hbs.registerHelper('get_duration',(startDate,endDate) => {
     const start = new Date(startDate);
@@ -45,7 +51,7 @@ hbs.registerHelper('get_full_time', (tanggal) => {
       minutes = "0" + minutes;
     }
   
-    return `${date} ${month} ${year} ${hours}:${minutes}`;
+    return `${date}-${month}-${year} ${hours}:${minutes}`;
 })
 
 app.set('view engine', 'hbs');
@@ -69,8 +75,14 @@ app.get('/', (req, res) => {
     res.render('index')
 });
 
-app.get('/blog', (req, res) => {
-    res.render('blog',{blogs})
+app.get('/blog', async (req, res) => {
+  const query = 'SELECT * FROM project';
+  let blogs = await sequelize.query(query, { type: QueryTypes.SELECT }); // Ganti const dengan let
+  blogs = blogs.map((blog) => ({
+    ...blog,
+    author: "mujtahidul Haq Mahyunda",
+  }));
+  res.render('blog', { blogs });
 });
 
 app.get('/contact', (req, res) => {
@@ -87,55 +99,54 @@ app.get('/register', (req, res) => {
   res.render('register')
 });
 
-app.get('/blogDetail/:id', (req, res) => {
-  const id = req.params.id;
-  const blog = blogs.find((blog, idx) => idx == id); // Temukan blog berdasarkan index
-
-  if (blog) {
-      const { title, content } = blog;
-      res.render('blogDetail', { id, title, content });
-  } else {
-      res.status(404).send("Blog not found");
-  }
+app.get('/blogDetail/:id', async (req, res) => {
+  const id = req.params.id; // Ubah ini untuk mengambil id dengan benar
+  const query = `SELECT * FROM project WHERE id = ${id}`;
+  const blog = await sequelize.query(query, { type: QueryTypes.SELECT });
+  blog[0].author = "Mujtahidul Haq Mahyunda"
+  res.render('blogDetail', { blog: blog[0] }); 
 });
 
-app.get('/edit-blog/:index', (req, res) => {
-    const { index } = req.params;
-    const blog = blogs.find((_, idx) => idx == index);
+app.get('/edit-blog/:id', (req, res) => {
+    const { id } = req.params;
+    const blog = blogs.find((_, idx) => idx == id);
     console.log("blog yang diedit",blog)
-    res.render('blogEdit',{blog, index})
+    res.render('blogEdit',{blog, id})
 })
 
 // POST DATA
-app.post('/blog', (req, res) => {
+app.post('/blog', async (req, res) => {
   const { title, content, startDate, endDate, nodejs, reactjs, nextjs, typescript } = req.body;
-  blogs.unshift({
-      title,
-      content,
-      image:"https://www.indiewire.com/wp-content/uploads/2023/07/oppenheimer-cillian.webp",
-      createdAt :new Date(),
-      durasi: hbs.handlebars.helpers.get_duration(startDate, endDate),
-      author:"Mujtahidul Haq Mahyunda",
-      reactjs: reactjs ? `<i class="fa-brands fa-react"></i>`: "",
-      nodejs: nodejs ?  `<i class="fa-brands fa-node"></i>` : "",
-      nextjs: nextjs ? `<i class="fa-brands fa-vuejs"></i>` : "",
-      typescript: typescript ? `<i class="fa-brands fa-js"></i>` : "",
-  })
+  const query = `INSERT INTO project (title,content,image,technologies,startDate,endDate,author_id,) VALUES('${title}','${content}','https://images7.alphacoders.com/367/367217.jpg', 'nodejs','${startDate}','${endDate}',2)`
+  const blog = await sequelize.query(query, { type: QueryTypes.SELECT });
+
+  // blogs.unshift({
+  //     title,
+  //     content,
+  //     image:"https://www.indiewire.com/wp-content/uploads/2023/07/oppenheimer-cillian.webp",
+  //     createdAt :new Date(),
+  //     durasi: hbs.handlebars.helpers.get_duration(startDate, endDate),
+  //     author:"Mujtahidul Haq Mahyunda",
+  //     reactjs: reactjs ? `<i class="fa-brands fa-react"></i>`: "",
+  //     nodejs: nodejs ?  `<i class="fa-brands fa-node"></i>` : "",
+  //     nextjs: nextjs ? `<i class="fa-brands fa-vuejs"></i>` : "",
+  //     typescript: typescript ? `<i class="fa-brands fa-js"></i>` : "",
+  // })
 
   res.redirect('/blog')
 });
 
-app.post('/delete-blog/:index',(req, res) => {
-  const {index} = req.params
-  blogs.splice(index, 1)
+app.post('/delete-blog/:id',(req, res) => {
+  const {id} = req.params
+  blogs.splice(id, 1)
   res.redirect('/blog')
 })
 
-app.post('/edit-blog/:index', (req, res) => {
-  const {index} = req.params;
+app.post('/edit-blog/:id', (req, res) => {
+  const {id} = req.params;
   const {title, content, startDate, endDate, reactjs, nodejs, nextjs, typescript } = req.body; 
   console.log(req.body);
-  blogs[index] = {
+  blogs[id] = {
       title,
       content,
       image: "https://www.indiewire.com/wp-content/uploads/2023/07/oppenheimer-cillian.webp",
