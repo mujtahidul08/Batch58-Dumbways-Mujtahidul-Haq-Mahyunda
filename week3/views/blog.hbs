@@ -99,19 +99,19 @@
                         <!-- Technology Selection (Checkboxes) -->
                         <div class="d-flex justify-content-evenly">
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" id="nodejs" name="nodejs">
+                                <input class="form-check-input" type="checkbox" id="nodejs" value="nodejs"  name="technologies[]">
                                 <label class="form-check-label">Node.JS</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" id="reactjs" name="reactjs">
+                                <input class="form-check-input" type="checkbox" id="reactjs" value="reactjs" name="technologies[]">
                                 <label class="form-check-label">React.JS</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" id="nextjs" name="nextjs">
+                                <input class="form-check-input" type="checkbox" id="nextjs" value="nextjs" name="technologies[]">
                                 <label class="form-check-label">Next.JS</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" id="typescript" name="typescript">
+                                <input class="form-check-input" type="checkbox" id="typescript" value="typescript" name="technologies[]">
                                 <label class="form-check-label">Type Script</label>
                             </div>
                         </div>
@@ -146,10 +146,14 @@
                   </div>
                   <!-- Programming Language Selection -->
                   <div class="bahasaProgram">
-                    {{{reactjs}}}
-                    {{{nodejs}}}
-                    {{{nextjs}}}
-                    {{{typescript}}}
+                    {{#if technologies}}
+                      {{#each (split technologies ",")}}
+                          {{#if (eq this "nodejs")}}<i class="fa-brands fa-node"></i>{{/if}}
+                          {{#if (eq this "reactjs")}}<i class="fa-brands fa-react"></i>{{/if}}
+                          {{#if (eq this "nextjs")}}<i class="fa-brands fa-vuejs"></i>{{/if}}
+                          {{#if (eq this "typescript")}}<i class="fa-brands fa-js"></i>{{/if}}
+                      {{/each}}
+                  {{/if}}
                   </div>
                   <!-- Blog Content -->
                   <div class="isi">
