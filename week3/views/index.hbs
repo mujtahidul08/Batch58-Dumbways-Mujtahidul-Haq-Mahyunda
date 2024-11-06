@@ -38,16 +38,28 @@
               <li class="nav-item">
                 <a class="nav-link fw-semibold" href="/testimonial">Testimonials</a>
               </li>
+              
             </ul>
             
             <!-- Login and Register Links -->
             <ul class="navbar-nav mb-2 mb-lg-0 d-flex align-items-center column-gap-3">
+                {{#if user}}
+                <li class="nav-item">
+                  <a class="nav-link fw-semibold" href="/testimonial">welcome, {{user.name}}</a>
+                </li>
+                <form action="/logout" method="post">
+                  <button class="btn btn-dark fw-semibold ms-3" type="submit" style="font-size: 20px;">
+                        Log Out
+                    </button>
+                </form>
+                {{else}}
                 <li class="nav-item">
                     <a class="nav-link fw-semibold" href="/login">Login</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link fw-semibold" href="/register">Register</a>
                 </li>
+                {{/if}}
                 <!-- Contact Button -->
                 <li class="nav-item">
                     <button class="btn btn-dark fw-semibold ms-3" type="button" style="font-size: 20px;" onclick="window.location.href='/contact';">
@@ -58,11 +70,16 @@
           </div>
         </div>
     </nav>
-    
+    {{#if messages.success}}
+      <div class="alert alert-success" role="alert">
+        {{messages.success}}
+      </div>
+    {{/if}}
     <div class="card" style="margin: 40px 40px; padding: 40px; box-shadow: 1px 3px 20px 1px gray; ">
         <div  class="card-flex d-flex" style="gap: 70px;">
             <div class="deskripsi">
                 <h1 class="h1 fw-bolder fs-1">Hi Welcome to My Web</h1>
+
                 <p class="p fw-normal fs-5" style="text-align: justify; margin-top: 20px;">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
                 <div class="kontak" style="margin-top: 20px;">
                     <button class="btn btn-dark rounded-pill"   style="padding: 5px 25px;">Contact</button>

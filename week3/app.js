@@ -8,6 +8,13 @@ const config = require("./config/config.json")
 const { Sequelize, QueryTypes } = require("sequelize")
 const sequelize = new Sequelize(config.development)
 
+//bycrpit
+const bcrypt = require("bcrypt");
+
+const session = require("express-session");
+const flash = require("express-flash");
+// const upload = require("./src/middlewares/upload-file");
+
 
 //helper function
 hbs.registerHelper('split', (str = "", delimiter, value) => str.split(delimiter).includes(value));
@@ -66,25 +73,43 @@ app.use("/views", express.static("views"));
 
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
-
-//  data array blogs
-const blogs = []
+app.use(session({
+  name: "my-session",
+  secret: "mujtahidul",
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false, maxAge: 1000 * 60 * 60 * 24 },
+}));
+app.use(flash());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // Routing
 
 //GET data
+app.get('/login', (req, res) => {
+  res.render('login')
+});
+
+app.get('/register', async (req, res) => {
+  res.render('register')
+});
+
+
 app.get('/', (req, res) => {
-    res.render('index')
+  const user = req.session.user;
+  console.log(user);
+
+  res.render("index", { user });
 });
 
 app.get('/blog', async (req, res) => {
   const query = 'SELECT * FROM project';
-  let blogs = await sequelize.query(query, { type: QueryTypes.SELECT }); // Ganti const dengan let
+  let blogs = await sequelize.query(query, { type: QueryTypes.SELECT });
   blogs = blogs.map((blog) => ({
     ...blog,
     author: "mujtahidul Haq Mahyunda",
   }));
-  console.log(blogs);
   res.render('blog', { blogs });
 });
 
@@ -138,6 +163,52 @@ app.get('/edit-blog/:id', async (req, res) => {
 //   console.log(blog[0])
 //   res.redirect('/blog');
 // });
+
+
+app.post('/register', async (req, res) => { 
+  const { name, email, password } = req.body;
+  const salt = 10;
+  const hashedPassword = await bcrypt.hash(password, salt);
+
+  const query = `INSERT INTO users(name, email, password) VALUES('${name}', '${email}', '${hashedPassword}')`;
+  const user = await sequelize.query(query, { type: QueryTypes.INSERT });
+  res.redirect('/login');
+});
+
+app.post('/login', async (req, res) => { 
+  const { email, password } = req.body;
+
+  const query = `SELECT * FROM users WHERE email='${email}'`;
+  const user = await sequelize.query(query, { type: QueryTypes.SELECT });
+
+  if (!user.length) {
+    req.flash("error", "Email / password salah!");
+    return res.redirect("/login");
+  }
+
+  const isVerifiedPassword = await bcrypt.compare(password, user[0].password);
+
+  if (!isVerifiedPassword) {
+    req.flash("error", "Email / password salah!");
+    return res.redirect("/login");
+  }
+
+  req.flash("success", "Berhasil login!");
+  req.session.user = user[0];
+  res.redirect("/");
+});
+
+app.post('/logout', (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      console.error("Logout gagal!");
+      return res.redirect("/"); 
+    }
+    console.log("Logout berhasil!");
+    res.redirect("/"); 
+  });
+});
+
 app.post('/blog', async (req, res) => {
   const { title, content, startDate, endDate, technologies } = req.body;
 
