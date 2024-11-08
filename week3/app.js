@@ -9,7 +9,7 @@ const { Sequelize, QueryTypes } = require("sequelize")
 
 require("dotenv").config()
 const environment = process.env.NODE_ENV
-const sequelize = new Sequelize(config[environme]);
+const sequelize = new Sequelize(config[environment]);
 
 //bycrpit
 const bcrypt = require("bcrypt");
