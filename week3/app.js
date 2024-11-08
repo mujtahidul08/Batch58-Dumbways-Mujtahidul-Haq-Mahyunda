@@ -9,12 +9,12 @@ const { Sequelize, QueryTypes } = require("sequelize")
 
 require("dotenv").config()
 const environment = process.env.NODE_ENV
-const sequelize = new Sequelize(config[environment]);
+const sequelize = new Sequelize(config[environme]);
 
 //bycrpit
 const bcrypt = require("bcrypt");
 
-const session = require("express-session");
+const session = require("cookie-session");
 const flash = require("express-flash");
 const upload = require('./middlewares/upload-file')
 
