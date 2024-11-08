@@ -31,16 +31,20 @@ module.exports = {
         type: Sequelize.DATE
       },
       author_id: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references: {
+          model:"users",
+          key: "id"
+        }
       },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
-      },
+        },
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE
-      }
+        }
     });
   },
   async down(queryInterface, Sequelize) {

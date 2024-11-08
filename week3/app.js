@@ -13,11 +13,14 @@ const bcrypt = require("bcrypt");
 
 const session = require("express-session");
 const flash = require("express-flash");
-// const upload = require("./src/middlewares/upload-file");
+const upload = require('./middlewares/upload-file')
 
 
 //helper function
-hbs.registerHelper('split', (str = "", delimiter, value) => str.split(delimiter).includes(value));
+hbs.registerHelper('split', function (array, value) {
+  if (!array) return false;
+  return array.includes(value);
+});
 hbs.registerHelper('eq', (a, b) => a === b);
 
 hbs.registerHelper('get_duration',(startDate,endDate) => {
@@ -70,6 +73,8 @@ app.use("/asset", express.static("asset"));
 app.use("/css", express.static("css"));
 app.use("/javascript", express.static("javascript"));
 app.use("/views", express.static("views"));
+app.use("/uploads", express.static("uploads"));
+
 
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
@@ -96,29 +101,36 @@ app.get('/register', async (req, res) => {
 });
 
 
-app.get('/', (req, res) => {
+app.get('/', async (req, res)  => {
+  const query = 'SELECT  blogs.*, users.name FROM blogs INNER JOIN users ON blogs.author_id = users.id';
+  let blogs = await sequelize.query(query, { type: QueryTypes.SELECT });
   const user = req.session.user;
-  console.log(user);
-
-  res.render("index", { user });
+  blogs = blogs.map(blog => {
+    try {
+      blog.technologies = JSON.parse(blog.technologies);
+    } catch (error) {
+      blog.technologies = []; // Set default array jika gagal
+    }
+    return blog;
+  });
+  res.render('index', { blogs, user});
 });
 
-app.get('/blog', async (req, res) => {
-  const query = 'SELECT * FROM project';
+app.get('/blog',async (req, res) => {
+  const query = 'SELECT  blogs.*, users.name FROM blogs INNER JOIN users ON blogs.author_id = users.id';
   let blogs = await sequelize.query(query, { type: QueryTypes.SELECT });
-  blogs = blogs.map((blog) => ({
-    ...blog,
-    author: "mujtahidul Haq Mahyunda",
-  }));
-  res.render('blog', { blogs });
+  const user = req.session.user;
+  res.render('blog', { blogs, user});
 });
 
 app.get('/contact', (req, res) => {
-    res.render('contact')
+  const user = req.session.user;
+    res.render('contact', {user})
 });
 
 app.get('/testimonial', (req, res) => {
-    res.render('testimonial')
+  const user = req.session.user;
+    res.render('testimonial', {user})
 });
 app.get('/login', (req, res) => {
   res.render('login')
@@ -128,42 +140,57 @@ app.get('/register', (req, res) => {
 });
 
 app.get('/blogDetail/:id', async (req, res) => {
+  const user = req.session.user;
   const id = req.params.id; // Ubah ini untuk mengambil id dengan benar
-  const query = `SELECT * FROM project WHERE id = ${id}`;
+  // const query = `SELECT * FROM blogs WHERE id = ${id}`;
+  const query = `
+    SELECT blogs.*, users.name
+    FROM blogs
+    INNER JOIN users ON blogs.author_id = users.id
+    WHERE blogs.id = ${id}`;
   const blog = await sequelize.query(query, { type: QueryTypes.SELECT });
-  blog[0].author = "Mujtahidul Haq Mahyunda"
-  res.render('blogDetail', { blog: blog[0] }); 
+  blog[0].technologies = JSON.parse(blog[0].technologies);
+  console.log(blog[0]);
+  res.render('blogDetail', { blog: blog[0], user }); 
 });
+
+// app.get('/edit-blog/:id', async (req, res) => {
+//   const id = req.params.id;
+//   const user = req.session.user;
+//   const query = `SELECT * FROM blogs WHERE id = ${id}`;
+//   let blogs = await sequelize.query(query, { type: QueryTypes.SELECT });
+//   blogs = blogs.map(blog => {
+//     blog.technologies = JSON.parse(blog.technologies);
+//     return blog;
+//   });
+//   console.log(blog[0])
+//   res.render('blogEdit', { blog: blog[0], user,id }); 
+// });
 
 app.get('/edit-blog/:id', async (req, res) => {
   const id = req.params.id;
-  const query = `SELECT * FROM project WHERE id = ${id}`;
-  const blog = await sequelize.query(query, { type: QueryTypes.SELECT });
-  blog[0].author = "Mujtahidul Haq Mahyunda"
-  res.render('blogEdit', { blog: blog[0] }); 
-})
+  const user = req.session.user;
+  const query = `SELECT * FROM blogs WHERE id = ${id}`;
+  let blogs = await sequelize.query(query, { type: QueryTypes.SELECT });
 
-// POST DATA
-// app.post('/blog', async (req, res) => {
-//   const { title, content, startDate, endDate, nodejs, reactjs, nextjs, typescript } = req.body;
-  
-// const technologies = [
-//     nodejs ? 'nodejs' : null,
-//     reactjs ? 'reactjs' : null,
-//     nextjs ? 'nextjs' : null,
-//     typescript ? 'typescript' : null,
-// ].filter(Boolean).join(','); // Mengubah array menjadi string
+  // Mengubah technologies menjadi array jika valid
+  blogs = blogs.map(blog => {
+    try {
+      blog.technologies = JSON.parse(blog.technologies);
+    } catch (error) {
+      blog.technologies = []; // Set default array jika gagal
+    }
+    return blog;
+  });
 
-//   const query = `
-//     INSERT INTO project (title, content, image, technologies, "startDate", "endDate", author_id)
-//     VALUES ('${title}', '${content}', 'https://images7.alphacoders.com/367/367217.jpg', '${technologies}', '${startDate}', '${endDate}', 2)
-//     RETURNING *;
-//   `;
-//   const [blog] = await sequelize.query(query, { type: QueryTypes.INSERT });
-//   console.log(blog[0])
-//   res.redirect('/blog');
-// });
+  // Akses blog yang pertama
+  const blog = blogs[0];
 
+  console.log(blog,user); // Memperbaiki akses ke blog pertama
+
+  // Render halaman edit blog dengan data blog dan user
+  res.render('blogEdit', {blog, user, id});
+});
 
 app.post('/register', async (req, res) => { 
   const { name, email, password } = req.body;
@@ -209,15 +236,16 @@ app.post('/logout', (req, res) => {
   });
 });
 
-app.post('/blog', async (req, res) => {
-  const { title, content, startDate, endDate, technologies } = req.body;
+app.post('/blog', upload.single("image"),async (req, res) => {
+  const { title, content, startDate, endDate, technologies} = req.body;
+  const {id} = req.session.user;
+  const imagePath = req.file.path;
 
-  // technologies akan menjadi array, jadi Anda tidak perlu melakukan filter dan join.
-  const technologiesString = technologies ? technologies.join(',') : '';
-
+  
+  const technologiesString = JSON.stringify(Array.isArray(technologies) ? technologies : [technologies]);
   const query = `
-      INSERT INTO project (title, content, image, technologies, "startDate", "endDate", author_id)
-      VALUES ('${title}', '${content}', 'https://images7.alphacoders.com/367/367217.jpg', '${technologiesString}', '${startDate}', '${endDate}', 2)
+      INSERT INTO blogs (title, content, image, technologies, "startDate", "endDate", author_id)
+      VALUES ('${title}', '${content}', '${imagePath}', '${technologiesString}', '${startDate}', '${endDate}', '${id}')
       RETURNING *;
   `;
   const [blog] = await sequelize.query(query, { type: QueryTypes.INSERT });
@@ -225,33 +253,31 @@ app.post('/blog', async (req, res) => {
   res.redirect('/blog');
 });
 
-app.post('/delete-blog/:id',(req, res) => {
-  const {id} = req.params
-  blogs.splice(id, 1)
-  res.redirect('/blog')
+app.post('/delete-blog/:id',async (req, res) => {
+  const { id } = req.params;
+  const query = `DELETE FROM blogs WHERE id=${id}`;
+  await sequelize.query(query, { type: QueryTypes.DELETE });
+
+  res.redirect("/");
 })
 
-app.post('/edit-blog/:id', async (req, res) => {
+app.post('/edit-blog/:id', upload.single("image"), async (req, res) => {
   const { id } = req.params;
-  const { title, content, startDate, endDate, reactjs, nodejs, nextjs, typescript } = req.body;
-
-  const technologies = [
-    nodejs ? 'nodejs' : null,
-    reactjs ? 'reactjs' : null,
-    nextjs ? 'nextjs' : null,
-    typescript ? 'typescript' : null,
-  ].filter(Boolean).join(',');
-
+  const userId = req.session.user.id; 
+  const { title, content, startDate, endDate, technologies } = req.body;
+  const imagePath = req.file.path;
+  
+  const technologiesString = JSON.stringify(Array.isArray(technologies) ? technologies : [technologies]);
+  
   const query = `
-    UPDATE project
-    SET title = '${title}', content = '${content}', image = 'https://www.indiewire.com/wp-content/uploads/2023/07/oppenheimer-cillian.webp',
-        technologies = '${technologies}', "startDate" = '${startDate}', "endDate" = '${endDate}', updatedAt = NOW()
-    WHERE id = ${id}
-    RETURNING *;
+    UPDATE blogs
+    SET title = '${title}', content = '${content}', ${imagePath ? `image = '${imagePath}',` : ''}
+        technologies = '${technologiesString}', "startDate" = '${startDate}', "endDate" = '${endDate}', "author_id" = '${userId}'
+    WHERE id = ${id};
   `;
   const [updatedBlog] = await sequelize.query(query, { type: QueryTypes.UPDATE });
-  console.log('Blog updated:', updatedBlog[0]);
-  res.redirect('/blog');
+  console.log('Blog updated:', updatedBlog);
+  res.redirect('/');
 });
 
 app.listen(port, () => {

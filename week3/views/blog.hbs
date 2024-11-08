@@ -34,9 +34,11 @@
               <li class="nav-item">
                 <a class="nav-link fw-semibold" href="/">Home</a>
               </li>
+              {{#if user}}
               <li class="nav-item">
                 <a class="nav-link fw-semibold active" href="/blog">Add Project</a>
               </li>
+              {{/if}}
               <li class="nav-item">
                 <a class="nav-link fw-semibold" href="/testimonial">Testimonials</a>
               </li>
@@ -44,12 +46,23 @@
             
             <!-- Login and Register Links -->
             <ul class="navbar-nav mb-2 mb-lg-0 d-flex align-items-center column-gap-3">
+                {{#if user}}
+                <li class="nav-item">
+                  <a class="nav-link fw-semibold" href="/testimonial">hello, {{user.name}}</a>
+                </li>
+                <form action="/logout" method="post">
+                  <button class="btn btn-dark fw-semibold ms-3" type="submit" style="font-size: 20px;">
+                        Log Out
+                    </button>
+                </form>
+                {{else}}
                 <li class="nav-item">
                     <a class="nav-link fw-semibold" href="/login">Login</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link fw-semibold" href="/register">Register</a>
                 </li>
+                {{/if}}
                 <!-- Contact Button -->
                 <li class="nav-item">
                     <button class="btn btn-dark fw-semibold ms-3" type="button" style="font-size: 20px;" onclick="window.location.href='/contact';">
@@ -64,12 +77,13 @@
     <!-- Blog Form Section -->
     <div class="blog">
         <div class="blog-form">
-            <div class="form-container">
+            {{!-- {{#if user}} --}}
+            <div class="form-container justify-content-center">
                 <!-- Title for Blog Form -->
-                <h1 class="h1 fw-bolder fs-1" style="text-align: center;">Create Post Blog</h1>
+                <h1 class="h1 fw-bolder fs-1" style="text-align: center;">Create Post Project</h1>
                 <div class="d-flex justify-content-center">
                     <!-- Blog Post Form -->
-                    <form method="post" action="/blog" class="form" style="width: 70%;">
+                    <form method="post" action="/blog" class="form" style="width: 70%;" enctype="multipart/form-data">
                         <!-- Project Name Field -->
                         <div class="mb-3">
                             <label class="form-label">Project Name</label>
@@ -97,7 +111,7 @@
                             <input class="form-control form-control-sm" id="inputImage" name="image" type="file">
                         </div>
                         <!-- Technology Selection (Checkboxes) -->
-                        <div class="d-flex justify-content-evenly">
+                        <div class="teknologi d-flex justify-content-evenly">
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input" type="checkbox" id="nodejs" value="nodejs"  name="technologies[]">
                                 <label class="form-check-label">Node.JS</label>
@@ -122,58 +136,8 @@
                     </form>
                 </div>
             </div>
+            {{!-- {{/if}} --}}
             
-           <hr class="line">
-
-            <!-- My Project Section -->
-            <h1 class="h1 fw-bolder fs-1" style="text-align: center;">My Project</h1>
-            <div id="content" class="blog-list">
-            
-            {{#each blogs}}
-               <div class="blog-list-items">
-                <div class="blog-image">
-                    <!-- Blog Image -->
-                    <img src="{{image}}" alt="image upload" style="font-size: 10px"/>
-                </div>
-                <div class="blog-content">
-                  <!-- Blog Title -->
-                  <h1>
-                    <a href="/blogDetail/{{id}}" target="_blank">{{title}}</a>
-                  </h1>
-                  <!-- Blog Details -->
-                  <div class="detail-blog">
-                    {{get_full_time createdAt}} | {{author}}
-                  </div>
-                  <!-- Programming Language Selection -->
-                  <div class="bahasaProgram">
-                    {{#if technologies}}
-                      {{#each (split technologies ",")}}
-                          {{#if (eq this "nodejs")}}<i class="fa-brands fa-node"></i>{{/if}}
-                          {{#if (eq this "reactjs")}}<i class="fa-brands fa-react"></i>{{/if}}
-                          {{#if (eq this "nextjs")}}<i class="fa-brands fa-vuejs"></i>{{/if}}
-                          {{#if (eq this "typescript")}}<i class="fa-brands fa-js"></i>{{/if}}
-                      {{/each}}
-                  {{/if}}
-                  </div>
-                  <!-- Blog Content -->
-                  <div class="isi">
-                    <h2>
-                      {{content}}
-                    </h2>
-                  </div>
-                  <!-- Blog Duration -->
-                    <p>Durasi: {{get_duration startDate endDate}}</p>
-                    <!-- Buttons for Editing and Posting -->
-                    <div class="btn-group" style="display:flex;">
-                        <a href="/edit-blog/{{id}}" class="btn-edit">Edit Blog</a>
-                        <form method="post" action="/delete-blog/{{id}}">
-                          <button type="submit" class="btn-post">delete Blog</button>
-                        </form>
-                    </div>
-                </div>
-              </div>
-            {{/each}}
-            </div>
         </div>
     </div>
 

@@ -34,9 +34,11 @@
               <li class="nav-item">
                 <a class="nav-link fw-semibold" href="/">Home</a>
               </li>
+              {{#if user}}
               <li class="nav-item">
-                <a class="nav-link fw-semibold" href="/blog">Add Project</a>
+                <a class="nav-link fw-semibold " href="/blog">Add Project</a>
               </li>
+              {{/if}} 
               <li class="nav-item">
                 <a class="nav-link fw-semibold" href="/testimonial">Testimonials</a>
               </li>
@@ -44,12 +46,23 @@
             
             <!-- Login and Register Links -->
             <ul class="navbar-nav mb-2 mb-lg-0 d-flex align-items-center column-gap-3">
+             {{#if user}}
+                <li class="nav-item">
+                  <a class="nav-link fw-semibold" href="/testimonial">welcome, {{user.name}}</a>
+                </li>
+                <form action="/logout" method="post">
+                  <button class="btn btn-dark fw-semibold ms-3" type="submit" style="font-size: 20px;">
+                        Log Out
+                    </button>
+                </form>
+                {{else}}
                 <li class="nav-item">
                     <a class="nav-link fw-semibold" href="/login">Login</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link fw-semibold" href="/register">Register</a>
                 </li>
+                {{/if}}
                 <!-- Contact Button -->
                 <li class="nav-item">
                     <button class="btn btn-dark fw-semibold ms-3" type="button" style="font-size: 20px;" onclick="window.location.href='/contact';">
@@ -74,14 +87,16 @@
       <div class="durasi">
         <p><i class="fa-solid fa-calendar-days"></i> {{get_full_time blog.createdAt}}</p>
         <p><i class="fa-solid fa-clock"></i> {{get_duration blog.startDate blog.endDate}}</p>
-          <p><i class="fa-solid fa-calendar-days"></i> {{blog.author}}</p>
+          <p><i class="fa-solid fa-calendar-days"></i> {{blog.name}}</p>
       </div>
       <h3>Technologies</h3>
       <div class="teknologi">
-        <i class="fa-brands fa-react" ></i>
-        <i class="fa-brands fa-node"></i>
-        <i class="fa-brands fa-vuejs"></i>
-        <i class="fa-brands fa-js"~></i>
+      {{#each blog.technologies}}
+       {{#if (eq this "nodejs")}}<i class="fa-brands fa-node"></i>{{/if}}
+        {{#if (eq this "reactjs")}}<i class="fa-brands fa-react"></i>{{/if}}
+        {{#if (eq this "nextjs")}}<i class="fa-brands fa-vuejs"></i>{{/if}}
+        {{#if (eq this "typescript")}}<i class="fa-brands fa-js"></i>{{/if}}
+      {{/each}} 
       </div>
     </div>
   </div>

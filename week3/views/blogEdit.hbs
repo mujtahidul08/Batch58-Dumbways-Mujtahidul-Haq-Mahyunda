@@ -34,9 +34,11 @@
               <li class="nav-item">
                 <a class="nav-link fw-semibold" href="/">Home</a>
               </li>
+              {{#if user}}
               <li class="nav-item">
-                <a class="nav-link fw-semibold" href="/blog">Add Project</a>
+                <a class="nav-link fw-semibold active" href="/blog">Add Project</a>
               </li>
+              {{/if}}
               <li class="nav-item">
                 <a class="nav-link fw-semibold" href="/testimonial">Testimonials</a>
               </li>
@@ -44,12 +46,23 @@
             
             <!-- Login and Register Links -->
             <ul class="navbar-nav mb-2 mb-lg-0 d-flex align-items-center column-gap-3">
+               {{#if user}}
                 <li class="nav-item">
-                    <a class="nav-link fw-semibold active" href="/login">Login</a>
+                  <a class="nav-link fw-semibold" href="/testimonial">welcome, {{user.name}}</a>
+                </li>
+                <form action="/logout" method="post">
+                  <button class="btn btn-dark fw-semibold ms-3" type="submit" style="font-size: 20px;">
+                        Log Out
+                    </button>
+                </form>
+                {{else}}
+                <li class="nav-item">
+                    <a class="nav-link fw-semibold" href="/login">Login</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link fw-semibold" href="/register">Register</a>
                 </li>
+                {{/if}}
                 <!-- Contact Button -->
                 <li class="nav-item">
                     <button class="btn btn-dark fw-semibold ms-3" type="button" style="font-size: 20px;" onclick="window.location.href='/contact';">
@@ -69,7 +82,7 @@
                 <h1 class="h1 fw-bolder fs-1" style="text-align: center;">Edit Blog</h1>
                 <div class="d-flex justify-content-center">
                     <!-- Blog Post Form -->
-                    <form method="post" action="/edit-blog/{{id}}" class="form" style="width: 70%;">
+                    <form method="post" action="/edit-blog/{{blog.id}}" class="form" style="width: 70%;" enctype="multipart/form-data">
                         <!-- Project Name Field -->
                         <div class="mb-3">
                             <label class="form-label">Project Name</label>
@@ -96,26 +109,31 @@
                             <label class="form-label">Upload Image</label>
                             <input class="form-control form-control-sm" id="inputImage" name="image" type="file">
                         </div>
+                        {{#if blog.image}}
+                            <div class="mt-3">
+                                <img src="/uploads/{{blog.image}}" alt="Current Image" style="max-width: 200px; max-height: 200px; object-fit: cover;">
+                            </div>
+                        {{/if}}
                         <!-- Technology Selection (Checkboxes) -->
                         <div class="d-flex justify-content-evenly">
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" id="nodejs" name="nodejs" 
-                                    {{#if (split blog.technologies "," "nodejs")}}checked{{/if}}>
-                                <label class="form-check-label" for="nodejs">Node.js</label>
+                            <input class="form-check-input" type="checkbox" id="nodejs" name="nodejs" 
+                                {{#if (split blog.technologies "nodejs")}}checked{{/if}}>
+                            <label class="form-check-label" for="nodejs">Node.js</label>
                             </div>
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input" type="checkbox" id="reactjs" name="reactjs" 
-                                    {{#if (split blog.technologies "," "reactjs")}}checked{{/if}}>
+                                    {{#if (split blog.technologies "reactjs")}}checked{{/if}}>
                                 <label class="form-check-label" for="reactjs">React.JS</label>
                             </div>
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input" type="checkbox" id="nextjs" name="nextjs" 
-                                    {{#if (split blog.technologies "," "nextjs")}}checked{{/if}}>
+                                    {{#if (split blog.technologies "nextjs")}}checked{{/if}}>
                                 <label class="form-check-label" for="nextjs">Next.JS</label>
                             </div>
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input" type="checkbox" id="typescript" name="typescript" 
-                                    {{#if (split blog.technologies "," "typescript")}}checked{{/if}}>
+                                    {{#if (split blog.technologies "typescript")}}checked{{/if}}>
                                 <label class="form-check-label" for="typescript">TypeScript</label>
                             </div>
                         </div>

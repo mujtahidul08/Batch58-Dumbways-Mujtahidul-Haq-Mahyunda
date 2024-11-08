@@ -31,9 +31,11 @@
               <li class="nav-item">
                 <a class="nav-link fw-semibold" href="/">Home</a>
               </li>
+              {{#if user}}
               <li class="nav-item">
                 <a class="nav-link fw-semibold" href="/blog">Add Project</a>
               </li>
+              {{/if}}
               <li class="nav-item">
                 <a class="nav-link fw-semibold" href="/testimonial">Testimonials</a>
               </li>
@@ -41,12 +43,23 @@
             
             <!-- Login and Register Links -->
             <ul class="navbar-nav mb-2 mb-lg-0 d-flex align-items-center column-gap-3">
+               {{#if user}}
+                <li class="nav-item">
+                  <a class="nav-link fw-semibold" href="/testimonial">hello, {{user.name}}</a>
+                </li>
+                <form action="/logout" method="post">
+                  <button class="btn btn-dark fw-semibold ms-3" type="submit" style="font-size: 20px;">
+                        Log Out
+                    </button>
+                </form>
+                {{else}}
                 <li class="nav-item">
                     <a class="nav-link fw-semibold" href="/login">Login</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link fw-semibold" href="/register">Register</a>
                 </li>
+                {{/if}}
                 <!-- Contact Button -->
                 <li class="nav-item">
                     <button class="btn btn-dark fw-semibold ms-3 active" type="button" style="font-size: 20px;" onclick="window.location.href='/contact';">
