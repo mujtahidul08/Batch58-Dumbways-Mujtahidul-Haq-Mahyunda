@@ -4,9 +4,12 @@ const port = 3000
 const hbs = require('hbs')
 
 // sequelize init
-const config = require("./config/config.json")
+const config = require("./config/config")
 const { Sequelize, QueryTypes } = require("sequelize")
-const sequelize = new Sequelize(config.development)
+
+require("dotenv").config()
+const environment = process.env.NODE_ENV
+const sequelize = new Sequelize(config[environment]);
 
 //bycrpit
 const bcrypt = require("bcrypt");
