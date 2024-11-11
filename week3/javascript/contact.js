@@ -30,6 +30,6 @@ function submitData(){
   
     const myemail = "mujahaq@gmail.com";
     let a = document.createElement("a");
-    a.href = `mailto:${myemail}?subject=${inputSubject}&body=Hello my name ${inputName}, and my number ${inputPhone} ${inputMessage}`;
+    a.href = `mailto:${myemail}?subject=${inputSubject}&body=Hello my name ${inputName}, and my number ${inputPhone}%0A%0A ${inputMessage}`;
     a.click();
 }

@@ -7,14 +7,19 @@ const hbs = require('hbs')
 const config = require("./config/config")
 const { Sequelize, QueryTypes } = require("sequelize")
 
-require("dotenv").config()
-const environment = process.env.NODE_ENV
-const sequelize = new Sequelize(config[environment]);
+const sequelize = new Sequelize('db_personal_web', 'postgres', 'mahyunda081001', {
+    host: 'localhost',
+    dialect: 'postgres', // Sesuaikan dengan database Anda
+    dialectOptions: {
+        ssl: false // Tambahkan ini untuk menonaktifkan SSL
+    }
+});
 
+module.exports = sequelize;
 //bycrpit
 const bcrypt = require("bcrypt");
 
-const session = require("cookie-session");
+const session = require("express-session");
 const flash = require("express-flash");
 const upload = require('./middlewares/upload-file')
 
@@ -107,7 +112,7 @@ app.get('/register', async (req, res) => {
 app.get('/', async (req, res)  => {
   const query = 'SELECT  blogs.*, users.name FROM blogs INNER JOIN users ON blogs.author_id = users.id';
   let blogs = await sequelize.query(query, { type: QueryTypes.SELECT });
-  const user = req.session.user;
+  user = req.session.user;
   blogs = blogs.map(blog => {
     try {
       blog.technologies = JSON.parse(blog.technologies);
@@ -145,7 +150,6 @@ app.get('/register', (req, res) => {
 app.get('/blogDetail/:id', async (req, res) => {
   const user = req.session.user;
   const id = req.params.id; // Ubah ini untuk mengambil id dengan benar
-  // const query = `SELECT * FROM blogs WHERE id = ${id}`;
   const query = `
     SELECT blogs.*, users.name
     FROM blogs
@@ -153,29 +157,17 @@ app.get('/blogDetail/:id', async (req, res) => {
     WHERE blogs.id = ${id}`;
   const blog = await sequelize.query(query, { type: QueryTypes.SELECT });
   blog[0].technologies = JSON.parse(blog[0].technologies);
+  blog[0].image = blog[0].image.replace(/\\/g, '/'); // Mengganti semua backslash menjadi slash
   console.log(blog[0]);
   res.render('blogDetail', { blog: blog[0], user }); 
 });
-
-// app.get('/edit-blog/:id', async (req, res) => {
-//   const id = req.params.id;
-//   const user = req.session.user;
-//   const query = `SELECT * FROM blogs WHERE id = ${id}`;
-//   let blogs = await sequelize.query(query, { type: QueryTypes.SELECT });
-//   blogs = blogs.map(blog => {
-//     blog.technologies = JSON.parse(blog.technologies);
-//     return blog;
-//   });
-//   console.log(blog[0])
-//   res.render('blogEdit', { blog: blog[0], user,id }); 
-// });
 
 app.get('/edit-blog/:id', async (req, res) => {
   const id = req.params.id;
   const user = req.session.user;
   const query = `SELECT * FROM blogs WHERE id = ${id}`;
   let blogs = await sequelize.query(query, { type: QueryTypes.SELECT });
-
+  
   // Mengubah technologies menjadi array jika valid
   blogs = blogs.map(blog => {
     try {
@@ -188,10 +180,9 @@ app.get('/edit-blog/:id', async (req, res) => {
 
   // Akses blog yang pertama
   const blog = blogs[0];
+  blog.image = blog.image.replace(/\\/g, '/'); 
 
-  console.log(blog,user); // Memperbaiki akses ke blog pertama
-
-  // Render halaman edit blog dengan data blog dan user
+  console.log(blog,user);
   res.render('blogEdit', {blog, user, id});
 });
 
@@ -269,17 +260,29 @@ app.post('/edit-blog/:id', upload.single("image"), async (req, res) => {
   const userId = req.session.user.id; 
   const { title, content, startDate, endDate, technologies } = req.body;
   const imagePath = req.file.path;
-  
-  const technologiesString = JSON.stringify(Array.isArray(technologies) ? technologies : [technologies]);
-  
+  console.log("Technologies received from form:", technologies);
+  // Konversi technologies ke string JSON
+  const technologiesArray = Array.isArray(technologies) ? technologies : [technologies];
+  const technologiesString = JSON.stringify(technologiesArray);
   const query = `
     UPDATE blogs
-    SET title = '${title}', content = '${content}', ${imagePath ? `image = '${imagePath}',` : ''}
-        technologies = '${technologiesString}', "startDate" = '${startDate}', "endDate" = '${endDate}', "author_id" = '${userId}'
+    SET title = '${title}', 
+        content = '${content}', 
+        image = '${imagePath}',
+        technologies = '${technologiesString}', 
+        "startDate" = '${startDate}', 
+        "endDate" = '${endDate}', 
+        "author_id" = '${userId}'
     WHERE id = ${id};
   `;
-  const [updatedBlog] = await sequelize.query(query, { type: QueryTypes.UPDATE });
-  console.log('Blog updated:', updatedBlog);
+
+  // Menjalankan query update
+  await sequelize.query(query, { type: QueryTypes.UPDATE });
+
+  // Mengambil semua data blog
+  const blogs = await sequelize.query(`SELECT * FROM blogs`, { type: QueryTypes.SELECT });
+
+  console.log('Blog updated');
   res.redirect('/');
 });
 
